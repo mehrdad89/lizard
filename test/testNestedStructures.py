@@ -228,6 +228,21 @@ class TestCppNestedStructures(unittest.TestCase):
         """)
         self.assertEqual(3, result[0].max_nested_structures)
 
+    def test_non_structure_braces_with_return(self):
+        """return statements in non-structural nesting level may confuse the nesting level."""
+        result = process_cpp("""
+        x c() {
+            if (a)
+                if (b)
+                    return false;
+
+            if (c)
+                if (d)
+                    return false;
+        }
+        """)
+        self.assertEqual(3, result[0].max_nested_structures) # should be valued 2
+
     @unittest.skip("Unspecified. Not Implemented. Convoluted.")
     def test_struct_inside_declaration(self):
         """Extra complexity class/struct should be ignored."""
